@@ -1,0 +1,36 @@
+<div class="auth-container">
+  <div class="auth-card">
+    <svg lucideLogIn class="auth-icon" [size]="48"></svg>
+    <h1>Login</h1>
+    <p class="auth-subtitle">Sign in to your TXNM account</p>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="auth-form">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Username</mat-label>
+        <input matInput formControlName="username" autocomplete="username" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Password</mat-label>
+        <input matInput type="password" formControlName="password" autocomplete="current-password" />
+      </mat-form-field>
+
+      <div class="error-banner" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+      <button mat-raised-button color="primary" type="submit" class="full-width submit-button"
+              [disabled]="loginForm.invalid || isSubmitting">
+        {{ isSubmitting ? 'Signing in...' : 'Login' }}
+      </button>
+
+      <button mat-stroked-button type="button" class="full-width google-button" (click)="loginWithGoogle()">
+        <svg lucideCircleUserRound></svg>
+        Continue with Google
+      </button>
+
+      <div class="auth-links">
+        <button mat-button type="button" (click)="goToForgotPassword()">Forgot password?</button>
+        <button mat-button type="button" (click)="goToRegister()">Create an account</button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -9,7 +9,7 @@
 
 .auth-card {
   width: 100%;
-  max-width: 480px;
+  max-width: 420px;
   text-align: center;
   background: white;
   padding: 2.5rem;
@@ -26,7 +26,7 @@
 }
 
 .auth-card h1 {
-  font-size: 1.75rem;
+  font-size: 2rem;
   color: #333;
   margin-bottom: 0.5rem;
   font-weight: 600;
@@ -48,18 +48,17 @@
   width: 100%;
 }
 
-.name-row {
-  display: flex;
-  gap: 1rem;
-}
-
-.half-width {
-  width: 50%;
-}
-
 .submit-button {
   margin-top: 0.5rem;
   height: 44px;
+}
+
+.google-button {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
 .error-banner {
@@ -73,21 +72,7 @@
 
 .auth-links {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   margin-top: 0.75rem;
-}
-
-.otp-hint {
-  color: #666;
-  margin-bottom: 0.5rem;
-}
-
-@media (max-width: 480px) {
-  .name-row {
-    flex-direction: column;
-  }
-
-  .half-width {
-    width: 100%;
-  }
+  flex-wrap: wrap;
 }

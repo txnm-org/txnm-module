@@ -1,30 +1,81 @@
-<div class="placeholder-container">
-  <div class="placeholder-content">
-    <mat-icon class="placeholder-icon">person_add</mat-icon>
-    <h1>Register</h1>
-    <p class="placeholder-description">
-      Create your TXNM account to access advanced features and save your transaction history.
+<div class="auth-container">
+  <div class="auth-card">
+    <svg lucideUserPlus class="auth-icon" [size]="48"></svg>
+    <h1>Create your TXNM account</h1>
+    <p class="auth-subtitle">
+      Save your transaction history, unlock advanced analytics, and more.
     </p>
-    <div class="placeholder-features">
-      <h3>Registration Benefits:</h3>
-      <ul>
-        <li>Save transaction history</li>
-        <li>Access advanced analytics</li>
-        <li>Multiple bank account support</li>
-        <li>Custom transaction categories</li>
-        <li>Export financial reports</li>
-        <li>Priority customer support</li>
-      </ul>
-    </div>
-    <div class="placeholder-actions">
-      <button class="register-button" disabled>
-        <mat-icon>person_add</mat-icon>
-        <span>Register (Coming Soon)</span>
+
+    <form *ngIf="step === 'details'" [formGroup]="detailsForm" (ngSubmit)="submitDetails()" class="auth-form">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Username</mat-label>
+        <input matInput formControlName="username" autocomplete="username" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Email</mat-label>
+        <input matInput type="email" formControlName="email" autocomplete="email" />
+      </mat-form-field>
+
+      <div class="name-row">
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>First name</mat-label>
+          <input matInput formControlName="firstName" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>Last name</mat-label>
+          <input matInput formControlName="lastName" />
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Password</mat-label>
+        <input matInput type="password" formControlName="password" autocomplete="new-password" />
+        <mat-hint *ngIf="!detailsForm.get('password')?.errors">At least 8 characters</mat-hint>
+        <mat-error *ngIf="detailsForm.get('password')?.errors?.['minlength']">
+          Password must be at least 8 characters
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Confirm password</mat-label>
+        <input matInput type="password" formControlName="confirmPassword" autocomplete="new-password" />
+      </mat-form-field>
+
+      <div class="error-banner" *ngIf="detailsForm.errors?.['passwordMismatch'] && detailsForm.get('confirmPassword')?.touched">
+        Passwords do not match
+      </div>
+      <div class="error-banner" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+      <button mat-raised-button color="primary" type="submit" class="full-width submit-button"
+              [disabled]="detailsForm.invalid || isSubmitting">
+        {{ isSubmitting ? 'Sending OTP...' : 'Sign up' }}
       </button>
-      <button class="back-button" (click)="goHome()">
-        <mat-icon>arrow_back</mat-icon>
-        <span>Back to Home</span>
+
+      <div class="auth-links">
+        <button mat-button type="button" (click)="goHome()">Back to home</button>
+      </div>
+    </form>
+
+    <form *ngIf="step === 'otp'" [formGroup]="otpForm" (ngSubmit)="submitOtp()" class="auth-form">
+      <p class="otp-hint">Enter the OTP sent to <strong>{{ detailsForm.value.email }}</strong></p>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>OTP</mat-label>
+        <input matInput formControlName="otp" autocomplete="one-time-code" />
+      </mat-form-field>
+
+      <div class="error-banner" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+      <button mat-raised-button color="primary" type="submit" class="full-width submit-button"
+              [disabled]="otpForm.invalid || isSubmitting">
+        {{ isSubmitting ? 'Verifying...' : 'Verify & create account' }}
       </button>
-    </div>
+
+      <div class="auth-links">
+        <button mat-button type="button" (click)="backToDetails()">Back</button>
+      </div>
+    </form>
   </div>
 </div>

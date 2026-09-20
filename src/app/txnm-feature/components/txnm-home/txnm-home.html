@@ -1,32 +1,100 @@
  <!-- TXNM Hero Section -->
  <section class="hero-section">
     <div class="hero-content">
-      <h1>Transaction Monitor</h1>
-      <p class="hero-subtitle">Intelligent Bank Statement Analysis & Transaction Monitoring</p>
-      <div class="hero-actions">
-        <button class="btn-primary">Upload Bank Statement PDF</button>
-        <button class="btn-secondary">Learn More</button>
+      <span class="hero-badge">
+        <svg lucideShieldCheck></svg>
+        No signup needed
+      </span>
+      <h1>Understand your bank statement <span class="accent">at a glance</span></h1>
+      <p class="hero-subtitle">Upload a PDF and get your transactions parsed, categorized and visualized — no spreadsheets, no manual entry.</p>
+    </div>
+  </section>
+
+  <!-- Transaction Upload Section -->
+  <section class="upload-section">
+    <div class="container">
+      <div class="upload-card">
+        <form [formGroup]="uploadForm" (ngSubmit)="onSubmit()" class="upload-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="bank-select">Select Your Bank *</label>
+              <select
+                id="bank-select"
+                formControlName="selectedBank"
+                (change)="onBankChange()"
+                class="form-control"
+                required>
+                <option value="">Choose your bank</option>
+                <option *ngFor="let bank of bankConfigs | keyvalue" [value]="bank.key">
+                  {{ bank.value.name }}
+                </option>
+              </select>
+            </div>
+
+            <div class="form-group" *ngIf="uploadForm.get('selectedBank')?.value">
+              <label for="statement-key">Statement Key *</label>
+              <input
+                type="text"
+                id="statement-key"
+                formControlName="statementKey"
+                (input)="onKeyChange()"
+                [placeholder]="getSelectedBankConfig()?.keyPlaceholder"
+                class="form-control"
+                required>
+              <div class="hint-text" *ngIf="getSelectedBankConfig()">
+                {{ getSelectedBankConfig()?.keyHint }}
+              </div>
+            </div>
+          </div>
+
+          <label for="pdf-upload" class="file-dropzone" [class.has-file]="selectedFile">
+            <span class="dropzone-icon">
+              <svg lucideCloudUpload></svg>
+            </span>
+            <span class="dropzone-title">{{ getFileName() }}</span>
+            <span class="dropzone-hint">or click to select · PDF up to 20 MB</span>
+          </label>
+          <input
+            type="file"
+            id="pdf-upload"
+            (change)="onFileSelected($event)"
+            accept=".pdf"
+            class="file-input"
+            required>
+
+          <div class="error-message" *ngIf="errorMessage">
+            {{ errorMessage }}
+          </div>
+
+          <button
+            type="submit"
+            class="btn-primary btn-large full-width-btn"
+            [disabled]="!uploadForm.valid || isLoading || !!errorMessage">
+            <span *ngIf="isLoading">Processing...</span>
+            <span *ngIf="!isLoading">Upload Statement</span>
+          </button>
+        </form>
       </div>
     </div>
   </section>
-  
+
   <!-- What is TXNM Section -->
   <section class="info-section">
     <div class="container">
       <h2>What is TXNM?</h2>
       <div class="info-grid">
         <div class="info-card">
-          <div class="card-icon">📊</div>
+          <svg lucideChartColumn class="card-icon" [size]="48"></svg>
           <h3>Transaction Analysis</h3>
           <p>Automatically extract and analyze transactions from your bank statements with advanced OCR technology.</p>
         </div>
         <div class="info-card">
-          <div class="card-icon">🔒</div>
+          <svg lucideLock class="card-icon" [size]="48"></svg>
           <h3>Secure Processing</h3>
           <p>Your financial data is processed securely with encrypted uploads and password protection.</p>
         </div>
         <div class="info-card">
-          <div class="card-icon">📈</div>
+          <svg lucideTrendingUp class="card-icon" [size]="48"></svg>
           <h3>Smart Analytics</h3>
           <p>Get detailed insights with daily and weekly analytics to understand your spending patterns.</p>
         </div>
@@ -40,7 +108,7 @@
       <h2>What TXNM Brings to You</h2>
       <div class="features-grid">
         <div class="feature-item">
-          <h4>📄 PDF Statement Processing</h4>
+          <h4><svg lucideFileText></svg> PDF Statement Processing</h4>
           <ul>
             <li>Upload bank statements in PDF format</li>
             <li>Support for password-protected documents</li>
@@ -48,15 +116,7 @@
           </ul>
         </div>
         <div class="feature-item">
-          <h4>💳 Transaction Extraction</h4>
-          <ul>
-            <li>Automatic transaction parsing</li>
-            <li>Date, amount, and description extraction</li>
-            <li>Support for multiple bank formats</li>
-          </ul>
-        </div>
-        <div class="feature-item">
-          <h4>📊 Daily Transaction Dashboard</h4>
+          <h4><svg lucideLayoutDashboard></svg> Daily Transaction Dashboard</h4>
           <ul>
             <li>View transactions organized by date</li>
             <li>Summary cards with key metrics</li>
@@ -64,7 +124,7 @@
           </ul>
         </div>
         <div class="feature-item">
-          <h4>📈 Advanced Analytics</h4>
+          <h4><svg lucideActivity></svg> Advanced Analytics</h4>
           <ul>
             <li>Daily analytics for detailed insights</li>
             <li>Weekly analytics for trend analysis</li>
@@ -103,71 +163,93 @@
       </div>
     </div>
   </section>
-  
-  <!-- Transaction Upload Section -->
-  <section class="upload-section">
+
+  <!-- Pricing Section -->
+  <section class="pricing-section">
     <div class="container">
-      <h2>Upload Your Bank Statement</h2>
-      <p>Get started by uploading your bank statement PDF and entering your statement key.</p>
-      
-      <form [formGroup]="uploadForm" (ngSubmit)="onSubmit()" class="upload-form">
-        <div class="form-row">
-          <div class="form-group">
-            <label for="bank-select">Select Your Bank *</label>
-            <select 
-              id="bank-select" 
-              formControlName="selectedBank" 
-              (change)="onBankChange()"
-              class="form-control"
-              required>
-              <option value="">Choose your bank</option>
-              <option *ngFor="let bank of bankConfigs | keyvalue" [value]="bank.key">
-                {{ bank.value.name }}
-              </option>
-            </select>
+      <h2>Simple, transparent pricing</h2>
+      <p class="pricing-subtitle">Start free. Upgrade whenever you need more.</p>
+
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <span class="pricing-audience">No signup</span>
+          <h3 class="pricing-title">Free</h3>
+          <div class="pricing-price">
+            <span class="amount">Free</span>
           </div>
+          <p class="pricing-note">No account needed</p>
+          <ul class="pricing-features">
+            <li><span class="check">✓</span> <span>1 statement / day</span></li>
+            <li><span class="check">✓</span> <span>Instant analysis</span></li>
+            <li><span class="check">✓</span> <span>Core banks supported</span></li>
+          </ul>
+          <button type="button" class="pricing-cta" (click)="scrollToUpload()">Start free</button>
+        </div>
 
-          <div class="form-group" *ngIf="uploadForm.get('selectedBank')?.value">
-            <label for="statement-key">Statement Key *</label>
-            <input 
-              type="text" 
-              id="statement-key" 
-              formControlName="statementKey" 
-              (input)="onKeyChange()"
-              [placeholder]="getSelectedBankConfig()?.keyPlaceholder"
-              class="form-control"
-              required>
-            <div class="hint-text" *ngIf="getSelectedBankConfig()">
-              {{ getSelectedBankConfig()?.keyHint }}
-            </div>
+        <div class="pricing-card">
+          <span class="pricing-audience">Registered</span>
+          <h3 class="pricing-title">Free</h3>
+          <div class="pricing-price">
+            <span class="amount">Free</span>
           </div>
+          <p class="pricing-note">Just create an account</p>
+          <ul class="pricing-features">
+            <li><span class="check">✓</span> <span>5 statements / day</span></li>
+            <li><span class="check">✓</span> <span>Saved transaction history</span></li>
+            <li><span class="check">✓</span> <span>Email support</span></li>
+          </ul>
+          <a routerLink="/txnm/register" class="pricing-cta">Create account</a>
         </div>
 
-        <div class="form-group">
-          <label for="pdf-upload" class="file-upload-label">
-            {{ getFileName() }}
-          </label>
-          <input 
-            type="file" 
-            id="pdf-upload" 
-            (change)="onFileSelected($event)"
-            accept=".pdf"
-            class="file-input"
-            required>
+        <div class="pricing-card">
+          <span class="pricing-audience">Trial</span>
+          <h3 class="pricing-title">Basic</h3>
+          <div class="pricing-price">
+            <span class="amount">₹0</span>
+            <span class="period">for 14 days</span>
+          </div>
+          <p class="pricing-note">Then ₹499 / month</p>
+          <ul class="pricing-features">
+            <li><span class="check">✓</span> <span>30 statements / month</span></li>
+            <li><span class="check">✓</span> <span>90-day history</span></li>
+            <li><span class="check">✓</span> <span>Priority processing</span></li>
+          </ul>
+          <a routerLink="/txnm/register" class="pricing-cta">Start trial</a>
         </div>
 
-        <div class="error-message" *ngIf="errorMessage">
-          {{ errorMessage }}
+        <div class="pricing-card pricing-card--featured">
+          <span class="pricing-ribbon">Most popular</span>
+          <span class="pricing-audience">Freelancers</span>
+          <h3 class="pricing-title">Starter</h3>
+          <div class="pricing-price">
+            <span class="amount">₹999</span>
+            <span class="period">/ month</span>
+          </div>
+          <p class="pricing-note">Billed monthly</p>
+          <ul class="pricing-features">
+            <li><span class="check">✓</span> <span>100 statements / month</span></li>
+            <li><span class="check">✓</span> <span>1-year history</span></li>
+            <li><span class="check">✓</span> <span>Priority support</span></li>
+          </ul>
+          <a routerLink="/txnm/register" class="pricing-cta">Get Starter</a>
         </div>
 
-        <button 
-          type="submit" 
-          class="btn-primary btn-large"
-          [disabled]="!uploadForm.valid || isLoading || !!errorMessage">
-          <span *ngIf="isLoading">Processing...</span>
-          <span *ngIf="!isLoading">Upload Statement</span>
-        </button>
-      </form>
+        <div class="pricing-card">
+          <span class="pricing-audience">Professionals</span>
+          <h3 class="pricing-title">Premium</h3>
+          <div class="pricing-price">
+            <span class="amount">₹2,499</span>
+            <span class="period">/ month</span>
+          </div>
+          <p class="pricing-note">Billed monthly</p>
+          <ul class="pricing-features">
+            <li><span class="check">✓</span> <span>Unlimited statements</span></li>
+            <li><span class="check">✓</span> <span>Unlimited history</span></li>
+            <li><span class="check">✓</span> <span>Dedicated support</span></li>
+          </ul>
+          <a routerLink="/txnm/register" class="pricing-cta">Get Premium</a>
+        </div>
+      </div>
     </div>
   </section>
 

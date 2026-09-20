@@ -22,7 +22,7 @@ export class Header implements OnInit, OnDestroy {
   menuItems = [
     { label: 'Home', route: '/txnm', icon: 'home' },
     { label: 'Individuals', route: '/txnm/individuals', icon: 'person' },
-    { label: 'Businesses', route: '/txnm/businesses', icon: 'business' },
+    { label: 'Enterprise', route: '/txnm/businesses', icon: 'business' },
     { label: 'Register', route: '/txnm/register', icon: 'person_add' },
     { label: 'About Us', route: '/txnm/about', icon: 'info' }
   ];
@@ -95,6 +95,12 @@ export class Header implements OnInit, OnDestroy {
   getUserTypeDisplay(): string {
     if (!this.currentUser) return 'Guest User';
     return this.currentUser.userType === 'GUEST' ? 'Guest User' : 'Registered User';
+  }
+
+  // Single letter shown in the profile avatar
+  getUserInitial(): string {
+    const name = this.getUserDisplayName();
+    return name.charAt(0).toUpperCase();
   }
 
   // Toggle mobile menu

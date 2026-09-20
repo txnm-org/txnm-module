@@ -3,70 +3,92 @@
     <!-- Logo/Brand -->
     <div class="logo">
       <button class="logo-button" (click)="navigateTo('/txnm')">
-        <mat-icon>account_balance</mat-icon>
+        <svg lucideLandmark></svg>
         <span class="logo-text">TXNM</span>
       </button>
     </div>
 
     <!-- Navigation Menu -->
     <nav class="nav-menu">
-      <button 
+      <button
         *ngFor="let item of menuItems"
         class="nav-button"
         [class.active]="isActiveRoute(item.route)"
         (click)="navigateTo(item.route)"
         [attr.aria-label]="item.label">
-        <mat-icon>{{ item.icon }}</mat-icon>
+        <ng-container [ngSwitch]="item.icon">
+          <svg *ngSwitchCase="'home'" lucideHouse></svg>
+          <svg *ngSwitchCase="'person'" lucideUser></svg>
+          <svg *ngSwitchCase="'business'" lucideBuildingComplex></svg>
+          <svg *ngSwitchCase="'person_add'" lucideUserPlus></svg>
+          <svg *ngSwitchCase="'info'" lucideInfo></svg>
+        </ng-container>
         <span class="nav-label">{{ item.label }}</span>
       </button>
     </nav>
 
     <!-- User Status Section -->
     <div class="user-section">
-      <div class="user-info" *ngIf="isAuthenticated">
-        <div class="user-details">
-          <span class="user-name">{{ getUserDisplayName() }}</span>
-          <span class="user-type">{{ getUserTypeDisplay() }}</span>
-        </div>
-        <button 
-          class="logout-button" 
-          (click)="logout()"
+      <ng-container *ngIf="isAuthenticated; else loggedOutTpl">
+        <button
+          class="profile-trigger"
           mat-icon-button
-          matTooltip="Logout">
-          <mat-icon>logout</mat-icon>
+          [matMenuTriggerFor]="profileMenu"
+          [attr.aria-label]="'Account menu for ' + getUserDisplayName()">
+          <span class="avatar">{{ getUserInitial() }}</span>
         </button>
-      </div>
-      
-      <div class="guest-info" *ngIf="!isAuthenticated">
-        <span class="guest-text">Guest User</span>
-        <button 
-          class="login-button" 
+
+        <mat-menu #profileMenu="matMenu" xPosition="before" class="profile-menu">
+          <div class="profile-menu-header">
+            <span class="avatar avatar-lg">{{ getUserInitial() }}</span>
+            <div class="profile-menu-details">
+              <span class="profile-name">{{ getUserDisplayName() }}</span>
+              <span class="profile-type">{{ getUserTypeDisplay() }}</span>
+            </div>
+          </div>
+          <mat-divider></mat-divider>
+          <button mat-menu-item (click)="logout()">
+            <span>Logout</span>
+          </button>
+        </mat-menu>
+      </ng-container>
+
+      <ng-template #loggedOutTpl>
+        <button
+          class="login-button"
           (click)="navigateTo('/txnm/login')"
           mat-stroked-button>
-          Login
+          <span>Login</span>
         </button>
-      </div>
+      </ng-template>
     </div>
 
     <!-- Mobile Menu Toggle -->
-    <button 
+    <button
       class="mobile-menu-toggle"
       mat-icon-button
       (click)="toggleMobileMenu()"
       [attr.aria-label]="'Toggle mobile menu'">
-      <mat-icon>{{ isMobileMenuOpen ? 'close' : 'menu' }}</mat-icon>
+      <svg *ngIf="isMobileMenuOpen" lucideX></svg>
+      <svg *ngIf="!isMobileMenuOpen" lucideMenu></svg>
     </button>
   </div>
 
   <!-- Mobile Navigation Menu -->
   <div class="mobile-menu" [class.open]="isMobileMenuOpen">
     <nav class="mobile-nav">
-      <button 
+      <button
         *ngFor="let item of menuItems"
         class="mobile-nav-button"
         [class.active]="isActiveRoute(item.route)"
         (click)="navigateTo(item.route)">
-        <mat-icon>{{ item.icon }}</mat-icon>
+        <ng-container [ngSwitch]="item.icon">
+          <svg *ngSwitchCase="'home'" lucideHouse></svg>
+          <svg *ngSwitchCase="'person'" lucideUser></svg>
+          <svg *ngSwitchCase="'business'" lucideBuildingComplex></svg>
+          <svg *ngSwitchCase="'person_add'" lucideUserPlus></svg>
+          <svg *ngSwitchCase="'info'" lucideInfo></svg>
+        </ng-container>
         <span>{{ item.label }}</span>
       </button>
     </nav>

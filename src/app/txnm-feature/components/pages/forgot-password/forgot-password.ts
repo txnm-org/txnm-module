@@ -5,24 +5,24 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../../../services/auth.service';
 
 function passwordsMatch(control: AbstractControl): ValidationErrors | null {
-  const password = control.get('password')?.value;
+  const password = control.get('newPassword')?.value;
   const confirmPassword = control.get('confirmPassword')?.value;
   return password && confirmPassword && password !== confirmPassword ? { passwordMismatch: true } : null;
 }
 
 @Component({
-  selector: 'app-register',
+  selector: 'app-forgot-password',
   standalone: false,
-  templateUrl: './register.html',
-  styleUrl: './register.css'
+  templateUrl: './forgot-password.html',
+  styleUrl: './forgot-password.css'
 })
-export class Register {
-  step: 'details' | 'otp' = 'details';
+export class ForgotPassword {
+  step: 'request' | 'reset' = 'request';
   isSubmitting = false;
   errorMessage: string | null = null;
 
-  detailsForm: FormGroup;
-  otpForm: FormGroup;
+  requestForm: FormGroup;
+  resetForm: FormGroup;
 
   constructor(
     private fb: FormBuilder,
@@ -30,57 +30,56 @@ export class Register {
     private router: Router,
     private snackBar: MatSnackBar
   ) {
-    this.detailsForm = this.fb.group({
-      username: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      firstName: [''],
-      lastName: [''],
-      password: ['', [Validators.required, Validators.minLength(8)]],
+    this.requestForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]]
+    });
+
+    this.resetForm = this.fb.group({
+      otp: ['', Validators.required],
+      newPassword: ['', [Validators.required, Validators.minLength(8)]],
       confirmPassword: ['', Validators.required]
     }, { validators: passwordsMatch });
-
-    this.otpForm = this.fb.group({
-      otp: ['', Validators.required]
-    });
   }
 
-  submitDetails(): void {
-    if (this.detailsForm.invalid) {
+  submitRequest(): void {
+    if (this.requestForm.invalid) {
       return;
     }
 
     this.isSubmitting = true;
     this.errorMessage = null;
-    const { confirmPassword, ...request } = this.detailsForm.value;
 
-    this.authService.signupInitiate(request).subscribe({
+    this.authService.forgotPassword(this.requestForm.value).subscribe({
       next: () => {
         this.isSubmitting = false;
-        this.step = 'otp';
-        this.snackBar.open(`OTP sent to ${request.email}`, 'Close', { duration: 4000 });
+        this.step = 'reset';
+        // kc-auth-service always responds the same way whether or not the email is registered
+        // (see UserController.forgotPassword) - the message here mirrors that intentionally.
+        this.snackBar.open('If this email is registered, an OTP was sent', 'Close', { duration: 4000 });
       },
-      error: (err) => {
+      error: () => {
         this.isSubmitting = false;
-        this.errorMessage = err?.error?.message || err?.error?.error || 'Signup failed, please try again';
+        this.errorMessage = 'Something went wrong, please try again';
       }
     });
   }
 
-  submitOtp(): void {
-    if (this.otpForm.invalid) {
+  submitReset(): void {
+    if (this.resetForm.invalid) {
       return;
     }
 
     this.isSubmitting = true;
     this.errorMessage = null;
 
-    this.authService.signupVerify({
-      email: this.detailsForm.value.email,
-      otp: this.otpForm.value.otp
+    this.authService.resetPassword({
+      email: this.requestForm.value.email,
+      otp: this.resetForm.value.otp,
+      newPassword: this.resetForm.value.newPassword
     }).subscribe({
       next: () => {
         this.isSubmitting = false;
-        this.snackBar.open('Account created - please log in', 'Close', { duration: 4000 });
+        this.snackBar.open('Password reset - please log in', 'Close', { duration: 4000 });
         this.router.navigate(['/txnm/login']);
       },
       error: (err) => {
@@ -90,12 +89,12 @@ export class Register {
     });
   }
 
-  backToDetails(): void {
-    this.step = 'details';
+  backToRequest(): void {
+    this.step = 'request';
     this.errorMessage = null;
   }
 
-  goHome(): void {
-    this.router.navigate(['/txnm']);
+  goToLogin(): void {
+    this.router.navigate(['/txnm/login']);
   }
 }

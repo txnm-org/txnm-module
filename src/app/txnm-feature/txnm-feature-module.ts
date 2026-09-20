@@ -16,6 +16,33 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatDividerModule } from '@angular/material/divider';
+
+// Lucide icons - thin-stroke line icons (matches Credable's own wcl-admin-frontend's hand-drawn
+// SVG icon style) used in Header, TxnmHome, Login, Register and ForgotPassword. Other, untouched
+// pages (analytics, transaction-list, etc.) still use Material Symbols Outlined via <mat-icon>.
+import {
+  LucideActivity,
+  LucideBuildingComplex,
+  LucideChartColumn,
+  LucideCircleUserRound,
+  LucideCloudUpload,
+  LucideFileText,
+  LucideHouse,
+  LucideInfo,
+  LucideKeyRound,
+  LucideLandmark,
+  LucideLayoutDashboard,
+  LucideLock,
+  LucideLogIn,
+  LucideMenu,
+  LucideShieldCheck,
+  LucideTrendingUp,
+  LucideUser,
+  LucideUserPlus,
+  LucideX
+} from '@lucide/angular';
 
 // Chart.js Modules
 import { BaseChartDirective, provideCharts, withDefaultRegisterables } from 'ng2-charts';
@@ -37,6 +64,8 @@ import { TransactionList } from './components/transaction-list/transaction-list'
 import { Individuals } from './components/pages/individuals/individuals';
 import { Businesses } from './components/pages/businesses/businesses';
 import { Register } from './components/pages/register/register';
+import { Login } from './components/pages/login/login';
+import { ForgotPassword } from './components/pages/forgot-password/forgot-password';
 import { AboutUs } from './components/pages/about-us/about-us';
 import { Analytics } from './components/analytics/analytics';
 import { DailyAnalytics } from './components/analytics/daily-analytics/daily-analytics';
@@ -55,6 +84,8 @@ import { ChartContainer } from './components/analytics/shared/chart-container';
     Individuals,
     Businesses,
     Register,
+    Login,
+    ForgotPassword,
     AboutUs,
     Analytics,
     DailyAnalytics,
@@ -85,7 +116,28 @@ import { ChartContainer } from './components/analytics/shared/chart-container';
     MatProgressBarModule,
     MatChipsModule,
     MatSnackBarModule,
-    BaseChartDirective
+    MatMenuModule,
+    MatDividerModule,
+    BaseChartDirective,
+    LucideActivity,
+    LucideBuildingComplex,
+    LucideChartColumn,
+    LucideCircleUserRound,
+    LucideCloudUpload,
+    LucideFileText,
+    LucideHouse,
+    LucideInfo,
+    LucideKeyRound,
+    LucideLandmark,
+    LucideLayoutDashboard,
+    LucideLock,
+    LucideLogIn,
+    LucideMenu,
+    LucideShieldCheck,
+    LucideTrendingUp,
+    LucideUser,
+    LucideUserPlus,
+    LucideX
   ],
   exports: [
     TxnmFeature

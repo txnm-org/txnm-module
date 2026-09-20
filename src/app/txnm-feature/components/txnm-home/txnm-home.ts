@@ -77,83 +77,42 @@ export class TxnmHome implements OnInit {
     }
   }
 
-  // NEW APPROACH: Session created during form submission
-async onSubmit(): Promise<void> {
-  if (this.uploadForm.valid && !this.errorMessage && this.selectedFile) {
-    try {
-      this.isLoading = true;
-      this.errorMessage = null;
+  async onSubmit(): Promise<void> {
+    if (this.uploadForm.valid && !this.errorMessage && this.selectedFile) {
+      try {
+        this.isLoading = true;
+        this.errorMessage = null;
 
-      // Create session ONLY when form is submitted
-      await this.authService.loginAsGuest().toPromise();
+        // Only create a guest session if there's no real login already - otherwise this would
+        // silently overwrite a logged-in user's session with a guest one on every upload.
+        if (!this.authService.hasValidSession()) {
+          await this.authService.loginAsGuest().toPromise();
+        }
 
-      const formData = this.uploadForm.value;
-      const transactions = await this.transactionService.parseTransactions(
-        this.selectedFile,
-        formData.statementKey,
-        formData.selectedBank
-      ).toPromise();
+        const formData = this.uploadForm.value;
+        const transactions = await this.transactionService.parseTransactions(
+          this.selectedFile,
+          formData.statementKey,
+          formData.selectedBank
+        ).toPromise();
 
-      if (transactions) {
-        this.snackBar.open('Transactions parsed successfully!', 'Close', {
-          duration: 3000
-        });
-        
-        // Navigate to analytics dashboard
-        this.router.navigate(['/txnm/analytics'], {
-          state: { message: 'Transactions parsed successfully!' }
-        });
+        if (transactions) {
+          this.snackBar.open('Transactions parsed successfully!', 'Close', {
+            duration: 3000
+          });
+
+          // Navigate to analytics dashboard
+          this.router.navigate(['/txnm/analytics'], {
+            state: { message: 'Transactions parsed successfully!' }
+          });
+        }
+      } catch (error: any) {
+        this.errorMessage = error?.message || 'An error occurred while processing the file';
+      } finally {
+        this.isLoading = false;
       }
-    } catch (error: any) {
-      this.errorMessage = error?.message || 'An error occurred while processing the file';
-    } finally {
-      this.isLoading = false;
     }
   }
-}
-
-  // Using async/await for cleaner sequential flow when awaiting promises
-  // commented out for now to test the new approach of session creation during form submission
-  // async onSubmit(): Promise<void> {
-  //   if (this.uploadForm.valid && !this.errorMessage && this.selectedFile) {
-  //     try {
-  //       this.isLoading = true;
-  //       this.errorMessage = null;
-
-  //       // If not authenticated, login as guest first
-  //       if (!this.isAuthenticated) {
-  //         await this.authService.loginAsGuest().toPromise();
-  //       }
-
-  //       const formData = this.uploadForm.value;
-  //       const transactions = await this.transactionService.parseTransactions(
-  //         this.selectedFile,
-  //         formData.statementKey,  // This will be used as password
-  //         formData.selectedBank    // This will be used as bankCode
-  //       ).toPromise();
-
-  //       if (transactions) {
-  //         this.snackBar.open('Transactions parsed successfully!', 'Close', {
-  //           duration: 3000
-  //         });
-          
-  //         // Navigate to analytics dashboard after successful upload
-  //         this.router.navigate(['/txnm/analytics'], {
-  //           state: { message: 'Transactions parsed successfully!' }
-  //         });
-  //       }
-  //     } catch (error: any) {
-  //       this.errorMessage = error?.message || 'An error occurred while processing the file';
-  //       this.snackBar.open(this.errorMessage!, 'Close', {
-  //         duration: 5000
-  //       });
-  //     } finally {
-  //       this.isLoading = false;
-  //     }
-  //   } else {
-  //     this.errorMessage = 'Please fill in all fields correctly';
-  //   }
-  // }
 
   getSelectedBankConfig(): BankConfig | null {
     const selectedBank = this.uploadForm.get('selectedBank')?.value;

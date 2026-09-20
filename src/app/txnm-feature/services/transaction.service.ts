@@ -77,7 +77,9 @@ export class TransactionService {
     console.log('Bank Name (sent to backend):', bankCode.toLowerCase());
     console.log('Session ID:', sessionId);
 
-    return this.baseApi.postFormData<Transaction[]>('/transactions/parse', formData).pipe(
+    // Wired to txnm-mvp's hardcoded test controller for now (gateway/module smoke test) -
+    // switch back to '/transactions/parse' once testing the real parsing flow.
+    return this.baseApi.postFormData<Transaction[]>('/test/transactions/upload', formData).pipe(
       map(response => {
         if (response.success && response.data) {
           console.log('Transactions parsed successfully:', response.data.length);
@@ -98,7 +100,7 @@ export class TransactionService {
       throw new Error('No active session');
     }
 
-    return this.baseApi.get<Transaction[]>(`/transactions?sessionId=${sessionId}`).pipe(
+    return this.baseApi.get<Transaction[]>(`/test/transactions?sessionId=${sessionId}`).pipe(
       map(response => {
         if (response.success && response.data) {
           return response.data;
@@ -118,7 +120,7 @@ export class TransactionService {
       throw new Error('No active session');
     }
 
-    return this.baseApi.get<any>(`/transactions/analytics/${period}?sessionId=${sessionId}`).pipe(
+    return this.baseApi.get<any>(`/test/transactions/analytics/${period}?sessionId=${sessionId}`).pipe(
       map(response => {
         if (response.success && response.data) {
           return response.data;

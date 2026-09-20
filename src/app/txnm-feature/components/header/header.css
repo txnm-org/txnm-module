@@ -87,46 +87,41 @@
   gap: 1rem;
 }
 
-.user-info {
-  display: flex;
+/* Profile avatar + popup menu */
+.profile-trigger {
+  padding: 0 !important;
+}
+
+.avatar {
+  display: inline-flex;
   align-items: center;
-  gap: 0.75rem;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  color: white;
+  font-weight: 700;
+  font-size: 0.95rem;
 }
 
-.user-details {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-}
-
-.user-name {
-  font-weight: 600;
-  font-size: 0.9rem;
-}
-
-.user-type {
-  font-size: 0.75rem;
-  opacity: 0.8;
-}
-
-.logout-button {
-  color: white !important;
-}
-
-.guest-info {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.guest-text {
-  font-size: 0.9rem;
-  opacity: 0.9;
+.avatar-lg {
+  width: 44px;
+  height: 44px;
+  font-size: 1.1rem;
+  background: #667eea;
+  border-color: transparent;
+  color: white;
+  flex-shrink: 0;
 }
 
 .login-button {
   color: white !important;
   border-color: white !important;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
 }
 
 /* Mobile Menu Toggle */
@@ -184,11 +179,7 @@
   .mobile-menu-toggle {
     display: block;
   }
-  
-  .user-details {
-    display: none;
-  }
-  
+
   .nav-label {
     display: none;
   }
@@ -198,12 +189,43 @@
   .header-content {
     padding: 0 0.5rem;
   }
-  
+
   .logo-text {
     font-size: 1.2rem;
   }
-  
-  .guest-text {
-    display: none;
-  }
+}
+
+/*
+ * The profile popup (<mat-menu>) renders in a CDK overlay attached near <body>, outside this
+ * component's own DOM subtree - Angular's emulated view encapsulation can't scope styles into it
+ * normally, hence ::ng-deep here. Scoped to the .profile-menu panelClass (set on <mat-menu
+ * class="profile-menu">) so this stays specific to this popup rather than leaking onto any other
+ * mat-menu the app adds later.
+ */
+::ng-deep .profile-menu .profile-menu-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  min-width: 200px;
+}
+
+::ng-deep .profile-menu .profile-menu-details {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+::ng-deep .profile-menu .profile-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: rgba(0, 0, 0, 0.87);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+::ng-deep .profile-menu .profile-type {
+  font-size: 0.8rem;
+  color: rgba(0, 0, 0, 0.6);
 }
